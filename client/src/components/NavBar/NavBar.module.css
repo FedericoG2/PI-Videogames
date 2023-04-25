@@ -1,0 +1,21 @@
+.navBar{
+    background-color:white;
+    height: 70px;
+}
+.container{
+    display: flex;
+    justify-content: left;
+    margin-left: 2%;
+
+}
+
+
+.titulo{
+   
+    display: flex;
+    justify-content: center;
+    color: white;
+    background-color: black;
+    
+    height: 180px;
+}
