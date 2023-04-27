@@ -2,11 +2,30 @@ const { Videogame, Genre } = require("../db");
 const axios = require("axios");
 const { API_KEY } = process.env;
 
-//==============================Funciones==========================================
-
-//--------Traer todos los juegos------
+//------------------------------------------------------------------------TRAER TODOS LOS JUEGOS-----------------------------
 const getAllVg = async () => {
-  // traigo los juegos de la db (incluyendo su relacion)
+  //-----------JUEGOS DE LA API-------------------------------------------------------------------
+
+  const arrayGamesApi = [];
+  for (let i = 1; i <= 7; i++) {
+    let response = await axios.get(
+      `https://api.rawg.io/api/games?key=${API_KEY}&page=${i}`
+    );
+    // mapeo y pusheo cada juego
+    response.data.results.map((game) => {
+      arrayGamesApi.push({
+        id: game.id,
+        name: game.name,
+        platform: game.platforms.map((e) => e.platform.name),
+        background_image: game.background_image,
+        released: game.released,
+        rating: game.rating,
+        genres: game.genres.map((g) => g.name),
+      });
+    });
+  }
+
+  // Traigo los juegos de la db (incluyendo su relacion)
   const gamesDb = await Videogame.findAll({
     include: {
       model: Genre,
@@ -30,33 +49,15 @@ const getAllVg = async () => {
     };
   });
 
-  // traigo los juegos de la api
-  const arrayGamesApi = [];
-  for (let i = 1; i <= 7; i++) {
-    let response = await axios.get(
-      `https://api.rawg.io/api/games?key=${API_KEY}&page=${i}`
-    );
-    // mapeo y pusheo cada juego
-    response.data.results.map((game) => {
-      arrayGamesApi.push({
-        id: game.id,
-        name: game.name,
-        platform: game.platforms.map((e) => e.platform.name),
-        background_image: game.background_image,
-        released: game.released,
-        rating: game.rating,
-        genres: game.genres.map((g) => g.name),
-      });
-    });
-  }
-  // concateno lo de la db y la api
+  // Concateno lo de la db y la api
   return [...arrayGamesDB, ...arrayGamesApi];
 };
+//----------------------------------------------------------------------------------------------
 
-//-------Traer los juegos por su nombre---------
+//--------------------------------------------TRAER LOS JUEGOS POR SU NOMBRE---------------
 const getVgByName = async (name) => {
   try {
-    // busco en la db por nombre
+    // DB
     const gamesDb = await Videogame.findAll({
       where: { name: name },
       include: {
@@ -80,7 +81,7 @@ const getVgByName = async (name) => {
         genres: game.genres.map((genre) => genre.name),
       };
     });
-
+    // API
     let arrayGamesApi = [];
     for (let i = 1; i <= 2; i++) {
       let response = await axios.get(
@@ -103,14 +104,14 @@ const getVgByName = async (name) => {
       (g) => g.name.toLowerCase() || g.name.toUpperCase()
     );
 
-    let allGamesByName = [...arrayGamesDB, ...arrayGamesApi].slice(0, 15); // -----> API +  DB
+    let allGamesByName = [...arrayGamesDB, ...arrayGamesApi].slice(0, 15);
     return allGamesByName;
   } catch (error) {
     throw Error("El juego ingresado no existe");
   }
 };
 
-//---------Traer los juegos por su id-------------
+//-----------------------------------------------TRAER LOS JUEGOS POR ID----------------------// (Solo tiene description si se busca por ID!)
 
 // De la API
 const getVgAPI = async (id) => {
@@ -120,14 +121,14 @@ const getVgAPI = async (id) => {
     `https://api.rawg.io/api/games/${id}?key=${API_KEY}`
   );
   gamesAPI.push({
-    id: getByAPI?.data?.id,
-    name: getByAPI?.data?.name,
-    description: getByAPI?.data?.description, // Solo tiene description si se busca por ID
-    platform: getByAPI?.data?.platforms?.map((e) => e.platform.name),
-    background_image: getByAPI?.data?.background_image,
-    released: getByAPI?.data?.released,
-    rating: getByAPI?.data?.rating,
-    genres: getByAPI?.data?.genres?.map((g) => g.name),
+    id: getByAPI?.data.id,
+    name: getByAPI?.data.name,
+    description: getByAPI?.data.description,
+    platform: getByAPI?.data.platforms.map((e) => e.platform.name),
+    background_image: getByAPI?.data.background_image,
+    released: getByAPI?.data.released,
+    rating: getByAPI?.data.rating,
+    genres: getByAPI?.data.genres.map((g) => g.name),
   });
 
   return gamesAPI;
@@ -160,29 +161,29 @@ const getVgDB = async (id) => {
   return gamesDB;
 };
 
-//-------------Crear un nuevo juego---------------
+//------------------------------------------------------------CREAR UN JUEGO-------------------------------------------------------
 const createNewGame = async ({
   name,
   description,
-  platform,
-  background_image,
-  released,
   rating,
+  released,
+  background_image,
   genre,
+  platform,
 }) => {
-  //  Verificar que todos los campos estan llenos
+  //Verificar que todos los campos estan llenos
   if (
     !name ||
     !description ||
-    !platform ||
-    !background_image ||
-    !released ||
     !rating ||
-    !genre
+    !released ||
+    !background_image ||
+    !genre ||
+    !platform
   ) {
     throw Error("Todos los campos son obligatorios");
   }
-  //  Verificar si el juego ya existe
+  //Verificar si el juego ya existe
   const searchName = await Videogame.findAll({
     where: { name: name },
   });
@@ -195,45 +196,40 @@ const createNewGame = async ({
       name: genre,
     },
   });
-  //Verificar si la tabla de generos esta vacia
-  if (getGenreDB.length === 0)
-    throw Error("Los generos no se cargaron correctamente!");
+
   //Guerdar nuevo juego en la DB
   let newVideogame = await Videogame.create({
-    name,
-    description,
-    platform,
-    background_image,
-    released,
-    rating: Number(rating),
-    genre,
+    name: name,
+    description: description,
+    rating: rating,
+    released: released,
+    background_image: background_image,
+
+    platform: platform,
   });
 
   await newVideogame.addGenres(getGenreDB);
 
   return newVideogame;
 };
-//==================================================================================
+//me parece que aca falta algo ojota rey
+//-----------------------------------------------------------------------------------------------------------------------------------
 
-// -----------Traer todos los juegos/traer juegos por su nombre--------------
+// -------------------------------------------------------------------TODOS LOS JUEGOS O POR NOMBRE(query)------------------
 const getVg = (name) => {
   if (!name) return getAllVg(); //Todos los juegos
   else return getVgByName(name); //Juegos por nombre
 };
 
-// -----------Traer juegos por su id---------------------------
+// -------------------------------------------------------------------JUEGOS POR ID(depende del tipo de id)-----------------------------
 const getVgById = async (id, source) => {
-  if (source === "API") return getVgAPI(id); //API
-  else return getVgDB(id); //DB
-};
-
-// ---------------Crear un juego en la DB-----------------
-const createVg = (form) => {
-  return createNewGame(form); // Crear juego
+  if (source === "API") return getVgAPI(id);
+  else return getVgDB(id);
 };
 
 module.exports = {
   getVg,
   getVgById,
-  createVg,
+
+  createNewGame,
 };

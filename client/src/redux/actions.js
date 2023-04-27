@@ -10,7 +10,6 @@ import {
   GET_GAMES_FROM_API_OR_DB,
   GET_PLATFORMS,
   FETCHED_ERRORS,
-  POST_VIDEOGAME,
 } from "./actionsTypes";
 
 // action traer todos los juegos
@@ -57,21 +56,6 @@ export const getGenres = () => {
   };
 };
 
-//action crear video juego
-export const postVideogame = (videogame, callback) => {
-  return async function (dispatch) {
-    await axios
-      .post("http://localhost:3001/videogames", videogame)
-      .then((response) => {
-        dispatch({ type: POST_VIDEOGAME, payload: response.data });
-        callback(response.data);
-      })
-      .catch((error) => {
-        console.log("Hubo un error en post videogame:", error);
-      });
-  };
-};
-
 // action traer generos filtrados
 export const getGenresFiltered = (genre) => {
   return { type: GET_GENRES_FILTERED, payload: genre };
@@ -92,7 +76,7 @@ export const getGamesFromApiOrDb = (value) => {
   return { type: GET_GAMES_FROM_API_OR_DB, payload: value };
 };
 
-// action para filtrar todas las plataformas
-export const getPlatforms = () => {
-  return { type: GET_PLATFORMS };
-};
+// // action para filtrar todas las plataformas
+// export const getPlatforms = () => {
+//   return { type: GET_PLATFORMS };
+// };

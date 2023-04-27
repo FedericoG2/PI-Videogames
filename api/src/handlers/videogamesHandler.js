@@ -1,10 +1,10 @@
 const {
   getVg,
   getVgById,
-  createVg,
+  createNewGame,
 } = require("../controlllers/videogamesController");
 
-//traer todos los juegos o traerlos por sus nombres
+//TODOS O POR SU NOMBRE
 const getVideogames = async (req, res) => {
   const { name } = req.query;
   try {
@@ -15,10 +15,10 @@ const getVideogames = async (req, res) => {
   }
 };
 
-// traer juegos por id
+// POR ID
 const getVideogameById = async (req, res) => {
   const { idVideogame } = req.params;
-  const source = isNaN(idVideogame) ? "DB" : "API";
+  const source = isNaN(idVideogame) ? "DB" : "API"; //Si da true es porque me envian un uuid
   try {
     const gamesById = await getVgById(idVideogame, source);
     res.status(200).json(gamesById);
@@ -27,26 +27,26 @@ const getVideogameById = async (req, res) => {
   }
 };
 
-// crear juego
+// CREAR UN JUEGO
 const postVideogame = async (req, res) => {
   const {
     name,
     description,
-    platform,
-    background_image,
-    released,
     rating,
+    released,
+    background_image,
     genre,
+    platform,
   } = req.body;
   try {
-    const newGame = await createVg({
+    const newGame = await createNewGame({
       name,
       description,
-      platform,
-      background_image,
-      released,
       rating,
+      released,
+      background_image,
       genre,
+      platform,
     });
     res.status(200).json(newGame);
   } catch (error) {

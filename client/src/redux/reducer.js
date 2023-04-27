@@ -9,7 +9,6 @@ import {
   GET_GAMES_FROM_API_OR_DB,
   GET_PLATFORMS,
   FETCHED_ERRORS,
-  POST_VIDEOGAME,
 } from "./actionsTypes";
 
 const initialState = {
@@ -24,33 +23,32 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
-    //Traer todos los juegos
     case GET_ALL_GAMES:
       return {
         ...state,
         allGames: action.payload,
         allGamesToFilter: action.payload,
       };
-    //Traer el juego que se busca
+
     case GET_GAME_BY_NAME:
       return {
         ...state,
         allGames: action.payload,
         allGamesToFilter: action.payload,
       };
-    //Traer un juego especifico (detailCard)
+
     case GET_GAME_BY_ID:
       return {
         ...state,
         gameDetail: action.payload,
       };
-    // Traer todos los generos
+
     case GET_GENRES:
       return {
         ...state,
         genres: action.payload,
       };
-    // Filtrar segun el genero
+    // -----------------------------------------FILTROS-------------------------------------------------------------------
     case GET_GENRES_FILTERED:
       return {
         ...state,
@@ -131,27 +129,21 @@ const reducer = (state = initialState, action) => {
         };
       }
 
-    // Llenar el estado global de plataformas
-    case GET_PLATFORMS:
-      let platforms = [];
-      state.allGamesToFilter.map((game) =>
-        game.platform.map((plat) => {
-          if (!platforms.includes(plat)) {
-            platforms.push(plat);
-          }
-        })
-      );
-      return {
-        ...state,
-        platforms: platforms,
-      };
-    case POST_VIDEOGAME:
-      var updatedAllVideogames = [...state.allGames];
-      updatedAllVideogames.push(action.payload);
-      return {
-        ...state,
-        allGames: [...updatedAllVideogames],
-      };
+    // // Llenar el estado global de plataformas
+    // case GET_PLATFORMS:
+    //   let platforms = [];
+    //   state.allGamesToFilter.map((game) =>
+    //     game.platform.map((plat) => {
+    //       if (!platforms.includes(plat)) {
+    //         platforms.push(plat);
+    //       }
+    //     })
+    //   );
+    //   return {
+    //     ...state,
+    //     platforms: platforms,
+    //   };
+
     case FETCHED_ERRORS:
       return {
         ...state,
@@ -159,13 +151,6 @@ const reducer = (state = initialState, action) => {
         errors: action.payload,
       };
 
-    // case POST_VIDEOGAME:
-    //   var updatedAllVideogames = [...state.allGames];
-    //   updatedAllVideogames.push(action.payload);
-    //   return {
-    //     ...state,
-    //     allGames: [...updatedAllVideogames],
-    //   };
     default:
       return { ...state };
   }
