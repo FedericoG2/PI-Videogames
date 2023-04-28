@@ -4,7 +4,7 @@ import { getGenres } from "../../redux/actions";
 import style from "./Form.module.css";
 import axios from "axios";
 
-const Formulario = () => {
+const Form = () => {
   const dispatch = useDispatch();
   const genres = useSelector((state) => state.genres);
 
@@ -143,6 +143,19 @@ const Formulario = () => {
   //-----------------------------------------------------------------ENVIO DE FORMULARIO-------------------------------------
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!form.name) {
+      return alert("Name is required");
+    } else if (!form.description) {
+      return alert("Description is required");
+    } else if (!form.released) {
+      return alert("Release date is required");
+    } else if (!form.rating || form.rating < 1 || form.rating > 5) {
+      return alert("Enter a rating between 1 and 5");
+    } else if (!form.platform.length) {
+      return alert("At least one platform is required");
+    } else if (!form.genre.length) {
+      return alert("At least one genre is required");
+    }
 
     axios
       .post("http://localhost:3001/videogames", form)
@@ -165,6 +178,10 @@ const Formulario = () => {
   return (
     <>
       <form onSubmit={handleSubmit} className={style.formulario}>
+        <div className={style.titulo}>
+          <h1>Create a new videogame !</h1>
+        </div>
+
         <div>
           <label htmlFor="nombre">Name :</label>
           <input
@@ -209,18 +226,18 @@ const Formulario = () => {
           <p className={style.error}>{error.description}</p>
         )}
         <div>
-          <h4>Type URL *</h4>
           <label>Image :</label>
           <input
-           
             type="url"
-            name="image"
+            name="background_image"
+            placeholder="..."
             value={form.background_image}
             onChange={handleChange}
           />
         </div>
-        {/* {error.image && <p className={style.error}>{error.background_image}</p>} */}
-
+        {error.background_image && (
+          <p className={style.error}>{error.background_image}</p>
+        )}
         <div>
           <h4>At least one platform and genre is required *</h4>
           <label htmlFor="nombre">Choose Genres :</label>
@@ -230,15 +247,15 @@ const Formulario = () => {
               Genres
             </option>
             {genres.map((genre) => (
-              <option key={genre.id}>{genre}</option>
+              <option key={genre.id}>{genre.name}</option>
             ))}
           </select>
           {error.genres && <p className={style.error}>{error.genres}</p>}
           <div className={style.boton}>
             <>
-              {form.genre.map((genre) => (
+              {form.genre.map((genre, i) => (
                 <button
-                  key={genre}
+                  key={i}
                   type="button"
                   value={genre}
                   onClick={(e) => handleDeleteGenre(e)}
@@ -282,4 +299,4 @@ const Formulario = () => {
   );
 };
 
-export default Formulario;
+export default Form;

@@ -8,8 +8,6 @@ import {
   GET_GAMES_ORDER_RATING,
   GET_GAMES_ORDER_ALPHABETIC,
   GET_GAMES_FROM_API_OR_DB,
-  GET_PLATFORMS,
-  FETCHED_ERRORS,
 } from "./actionsTypes";
 
 // action traer todos los juegos
@@ -21,17 +19,27 @@ export const getAllGames = () => {
   };
 };
 
-// action traer juegos por nombres
-export const getGameByName = (name) => async (dispatch) => {
-  try {
+// export function getAllgames() {
+//   return function (dispatch) {
+//     return fetch("http://localhost:3001/videogames")
+//       .then((response) => response.json())
+//       .then((data) => dispatch({ type: GET_ALL_GAMES, payload: data }))
+
+//       .catch((error) => {
+//         console.log("Hubo un error en get videogames:", error);
+//       });
+//   };
+// }
+
+//Action juego po rnombre
+export const getGameByName = (name) => {
+  return async function (dispatch) {
     const response = await axios.get(
       `http://localhost:3001/videogames?name=${name}`
     );
     const data = response.data;
     return dispatch({ type: GET_GAME_BY_NAME, payload: data });
-  } catch (error) {
-    dispatch({ type: FETCHED_ERRORS, payload: error.response.data.error });
-  }
+  };
 };
 
 // action traer juegos por id
@@ -75,8 +83,3 @@ export const getGamesOrderAlphabetic = (value) => {
 export const getGamesFromApiOrDb = (value) => {
   return { type: GET_GAMES_FROM_API_OR_DB, payload: value };
 };
-
-// // action para filtrar todas las plataformas
-// export const getPlatforms = () => {
-//   return { type: GET_PLATFORMS };
-// };

@@ -7,8 +7,7 @@ import {
   GET_GENRES,
   GET_GENRES_FILTERED,
   GET_GAMES_FROM_API_OR_DB,
-  GET_PLATFORMS,
-  FETCHED_ERRORS,
+  
 } from "./actionsTypes";
 
 const initialState = {
@@ -16,8 +15,6 @@ const initialState = {
   allGamesToFilter: [],
   gameDetail: [],
   genres: [],
-  platforms: [],
-  errors: "",
   ApiOrDb: "",
 };
 
@@ -48,7 +45,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         genres: action.payload,
       };
-    // -----------------------------------------FILTROS-------------------------------------------------------------------
+    // -----------------------------------------FILTROS-------------------------------------------------------------------(Arriba ya esta todo filtrado en el back)
     case GET_GENRES_FILTERED:
       return {
         ...state,
@@ -92,7 +89,7 @@ const reducer = (state = initialState, action) => {
         return {
           ...state,
           allGames: [
-            ...state.allGames.sort((a, b) => a.name.localeCompare(b.name)),
+            ...state.allGames.sort((a, b) => a.name.localeCompare(b.name)), // String.prototype.localeCompare() que permite comprarar dos cadenas teniendo en cuenta acentos y otras características específicas de cada idioma para la ordenación. Lo mejor de todo, es que esta función devuelve -1, 1 o 0 según si es mayor, menor o igual,
           ],
         };
       } else {
@@ -128,28 +125,6 @@ const reducer = (state = initialState, action) => {
           allGames: [...state.allGamesToFilter],
         };
       }
-
-    // // Llenar el estado global de plataformas
-    // case GET_PLATFORMS:
-    //   let platforms = [];
-    //   state.allGamesToFilter.map((game) =>
-    //     game.platform.map((plat) => {
-    //       if (!platforms.includes(plat)) {
-    //         platforms.push(plat);
-    //       }
-    //     })
-    //   );
-    //   return {
-    //     ...state,
-    //     platforms: platforms,
-    //   };
-
-    case FETCHED_ERRORS:
-      return {
-        ...state,
-        allGames: [],
-        errors: action.payload,
-      };
 
     default:
       return { ...state };

@@ -12,7 +12,7 @@ const Detail = () => {
   // cada vez que el id cambie se cambia el estado global de detail
   useEffect(() => {
     dispatch(getGameById(idVideogame));
-  }, [idVideogame]);
+  }, [dispatch,idVideogame]);
   const gameDetail = useSelector((state) => state.gameDetail);
 
   return (
@@ -20,7 +20,7 @@ const Detail = () => {
       <div className={style.containerDetail}>
         {gameDetail.map((game) => {
           return (
-            gameDetail[0].id == idVideogame && (
+            gameDetail[0].id === idVideogame && (
               <div className={style.detail}>
                 <div className={style.imagen}>
                   <img

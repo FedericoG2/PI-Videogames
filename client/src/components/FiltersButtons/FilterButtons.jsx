@@ -16,7 +16,6 @@ function FilterButtons() {
   const location = useLocation();
   const dispatch = useDispatch();
   const genres = useSelector((state) => state.genres);
-
   // action para ordenar alfabeticamente
   const gamesOrderAlphabetic = (event) => {
     dispatch(getGamesOrderAlphabetic(event.target.value));
@@ -40,41 +39,32 @@ function FilterButtons() {
   }, [dispatch]);
   return (
     <div className={style.container}>
-      <select className={style.selects} onChange={filterByGenre}>
-        <option select disabled selected={true}>
-          Genres
-        </option>
-        {genres.map((genre) => {
-          return (
-            <option key={genre} value={genre}>
-              {genre}
-            </option>
-          );
-        })}
+      <select className={style.selects} onChange={gamesOrderAlphabetic}>
+        <option select disabled selected={true}>A/Z</option>
+        <option value="Ascendente">A-Z</option>
+        <option value="Descendente">Z-A</option>
+      </select>
+      <select className={style.selects} onChange={gameOrderRating}>
+        <option select disabled selected={true}>Rating</option>
+        <option value="Ascendente">Bajo</option>
+        <option value="Descendente">Alto</option>
       </select>
       <select className={style.selects} onChange={filterByOrigin}>
-        <option select disabled selected={true}>
-          Origin
-        </option>
+        <option select disabled selected={true}>Origin</option>
         <option value="ALL">All games</option>
         <option value="API">From API</option>
         <option value="DB">Created by user</option>
       </select>
-      <select className={style.selects} onChange={gameOrderRating}>
-        <option select disabled selected={true}>
-          Rating
-        </option>
-        <option value="Ascendente">Bajo</option>
-        <option value="Descendente">Alto</option>
+      <select className={style.selects} onChange={filterByGenre}>
+        <option select disabled selected={true}>Genres</option>
+        {genres.map((genre) => {
+          return (
+            <option key={genre.id} value={genre.name}>
+              {genre.name}
+            </option>
+          );
+        })}
       </select>
-      <select className={style.selects} onChange={gamesOrderAlphabetic}>
-        <option select disabled selected={true}>
-          A/Z
-        </option>
-        <option value="Ascendente">A-Z</option>
-        <option value="Descendente">Z-A</option>
-      </select>
-
       <button onClick={() => dispatch(getAllGames())}>Reload</button>
       {
         // el boton create no se muestra en /form
@@ -89,3 +79,4 @@ function FilterButtons() {
 }
 
 export default FilterButtons;
+

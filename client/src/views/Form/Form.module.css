@@ -9,6 +9,16 @@ body {
 	font-family: 'Open Sans', sans-serif;
 }
 
+.formulario .titulo{
+	
+	
+	margin-bottom: 50px;
+	display: flex;
+	justify-content: center;
+	
+	
+	
+}
 .contenedor {
 	min-height: 100vh;
 	display: flex;

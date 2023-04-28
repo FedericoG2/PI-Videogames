@@ -2,7 +2,6 @@ import { NavLink } from "react-router-dom";
 import style from "./NavBar.module.css";
 import SearchBar from "../SearchBar/SearchBar";
 
-import { IoGameControllerOutline } from "react-icons/io5";
 import { useLocation } from "react-router-dom";
 
 export default function NavBar() {
@@ -11,11 +10,8 @@ export default function NavBar() {
     <div>
       <nav className={style.navBar}>
         <div className={style.container}>
-          <NavLink to="/home">
-            <IoGameControllerOutline
-              size={"3em"}
-              style={{ marginTop: "15px" }}
-            />
+          <NavLink className={style.home} to="/home">
+            HOME
           </NavLink>
         </div>
       </nav>
@@ -28,5 +24,3 @@ export default function NavBar() {
     </div>
   );
 }
-
-

@@ -1,13 +1,17 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import style from "./Card.module.css";
-
+import myImg from "../../Img/imagen.jpg";
 export default function Card({ id, image, name, genres, rating }) {
   return (
     <NavLink to={`/detail/${id}`}>
       <div className={style.celda}>
         <div className={style.img}>
-          <img className={style.img} src={image} alt="img not found" />
+          <img
+            className={style.img}
+            src={image ? image : myImg}
+            alt="img not found"
+          />
         </div>
         <div className={style.box}>
           <div className={style.info}>
